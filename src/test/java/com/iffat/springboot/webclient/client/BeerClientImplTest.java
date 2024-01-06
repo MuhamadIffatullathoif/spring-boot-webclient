@@ -13,6 +13,16 @@ class BeerClientImplTest {
     BeerClient beerClient;
 
     @Test
+    void testGetMap() {
+        beerClient.listBeersMap().subscribe(System.out::println);
+        try {
+            Thread.sleep(1000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     void listBeers() {
         beerClient.listBeers().subscribe(System.out::println);
         try {
