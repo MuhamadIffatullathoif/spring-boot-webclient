@@ -18,6 +18,36 @@ class BeerClientImplTest {
     BeerClient beerClient;
 
     @Test
+    void testDelete() {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
+        beerClient.listBeerDtos()
+                .next()
+                .flatMap(dto -> beerClient.delete(dto))
+                .doOnSuccess(dto -> atomicBoolean.set(true))
+                .subscribe();
+
+        await().untilTrue(atomicBoolean);
+    }
+
+    @Test
+    void testPatch() {
+        final String NAME = "New Name";
+
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        beerClient.listBeerDtos()
+                .next()
+                .map(beerDTO -> BeerDTO.builder().beerName(NAME).id(beerDTO.getId()).build())
+                .flatMap(dto -> beerClient.patchBeer(dto))
+                .subscribe(byIdDto -> {
+                    System.out.println(byIdDto.toString());
+                    atomicBoolean.set(true);
+                });
+
+        await().untilTrue(atomicBoolean);
+    }
+
+    @Test
     void testUpdate() {
         final String NAME = "New Name";
 
